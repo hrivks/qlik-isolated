@@ -5,6 +5,7 @@ var qlikIsolated = (function () {
     var SINGLE_URL_APPID_PLACEHOLDER = '#APPID#';
     var SINGLE_URL_OBJ_PLACEHOLDER = '#OBJ#';
     var SINGLE_URL_OPT_PLACEHOLDER = '#OPT#';
+    var SINGLE_URL_SHEET_PLACEHOLDER = '#SHEET#';
     var SINGLE_URL_OPT_SELECTION_BAR = 'currsel,';
     var SINGLE_URL_OPT_NO_INTERACTION = 'nointeraction,';
     var SINGLE_URL_OPT_NO_SELECTION = 'noselections,';
@@ -12,6 +13,7 @@ var qlikIsolated = (function () {
     var SINGLE_URL_CLEAR_SELECTION = '&select=clearall';
     var SINGLE_URL = '/single/?appid=' + SINGLE_URL_APPID_PLACEHOLDER
         + '&obj=' + SINGLE_URL_OBJ_PLACEHOLDER
+        + '$sheet=' + SINGLE_URL_SHEET_PLACEHOLDER
         + '&opt=' + SINGLE_URL_OPT_PLACEHOLDER;
 
     var resolve;
@@ -79,7 +81,7 @@ var qlikIsolated = (function () {
         reject(e);
     }
 
-    function getObjectIsolated(element, appid, obj, baseUrl,
+    function getObjectIsolated(element, appid, obj, sheet, baseUrl,
                                showSelectionBar, clearSelection, disableInteraction,
                                disableSelection, disableAnimation, selections) {
         if(!element)
@@ -87,9 +89,9 @@ var qlikIsolated = (function () {
 
         if (typeof appid !== 'string')
             throw 'qlik-Isolated: appid must be a vaild string';
-
-        if (typeof obj !== 'string')
-            throw 'qlik-Isolated: obj must be a vaild string';
+        
+        if ((typeof obj !== 'string') && (typeof sheet !== 'string'))
+            throw 'qlik-Isolated: obj or sheet must be a vaild string';
 
         // form Qlik Sense Single integration URL
         var url = baseUrl || qlikServerBaseUrl;
@@ -106,7 +108,8 @@ var qlikIsolated = (function () {
         url += SINGLE_URL
             .replace(SINGLE_URL_APPID_PLACEHOLDER, appid)
             .replace(SINGLE_URL_OBJ_PLACEHOLDER, obj)
-            .replace(SINGLE_URL_OPT_PLACEHOLDER, options);
+            .replace(SINGLE_URL_OPT_PLACEHOLDER, options)
+            .replace(SINGLE_URL_SHEET_PLACEHOLDER, sheet);
 
         if(clearSelection)
             url += SINGLE_URL_CLEAR_SELECTION;
