@@ -1,30 +1,52 @@
 /**
- * Initialize qlik isolated
- * @param {Object} [config] global qlik configuration
- * @property {string} config.url Qlik server base url
- * @property {string} [config.perfix = '/'] Qlik Server prefix for resources folder
- * @property {boolean} [config.autoload = false] Load qlik.js on statup
- * @return {Object} qlikIsolated object
+ * @fileOverview qlik-isolated.js : Load Qlik Sense's qlik.js in a isolated non-conflicting way and
+ *                                  embed Qlik Sense objects
+ * @author <a href="hrivks@gmail.com">Hari Vikas Janarthanan (hrivks)</a>
+ * @version 1.0.2
+ * @license MIT
  */
-var qlikIsolated = (function (config) {
+
+/**
+ * Configuration options for qlik isolated
+ * @typedef {Object} qlikIsolatedLoadConfig
+ * @property {string} url Qlik server base url
+ * @property {string} [perfix = '/'] Qlik Server prefix for resources folder
+ * @property {boolean} [makeGlobal = false] after autoloading,aAssign qlik to window object
+ * @property {function} successCallback function to callback when qlik is loaded
+ * @property {function} failureCallback function to callback when qlik load failed
+ */
+
+var qlikIsolated = (function () {
     var qlik;
+    /** @type {string}  **/
     var qlikServerBaseUrl;
-    var qlikServerPrefix;
+    /** @type {string}  **/
+    var qlikServerPrefix = '/';
+    /** @constant  **/
     var SINGLE_URL_APPID_PLACEHOLDER = '#APPID#';
+    /** @constant  **/
     var SINGLE_URL_OBJ_PLACEHOLDER = '#OBJ#';
+    /** @constant  **/
     var SINGLE_URL_OPT_PLACEHOLDER = '#OPT#';
+    /** @constant  **/
     var SINGLE_URL_SHEET_PLACEHOLDER = '#SHEET#';
+    /** @constant  **/
     var SINGLE_URL_OPT_SELECTION_BAR = 'currsel,';
     var SINGLE_URL_OPT_NO_INTERACTION = 'nointeraction,';
+    /** @constant  **/
     var SINGLE_URL_OPT_NO_SELECTION = 'noselections,';
+    /** @constant  **/
     var SINGLE_URL_OPT_NO_ANIMATION = 'noanimate,';
+    /** @constant  **/
     var SINGLE_URL_CLEAR_SELECTION = '&select=clearall';
+    /** @constant  **/
     var SINGLE_URL = '/single/?appid=' + SINGLE_URL_APPID_PLACEHOLDER
         + '&obj=' + SINGLE_URL_OBJ_PLACEHOLDER
         + '&sheet=' + SINGLE_URL_SHEET_PLACEHOLDER
         + '&opt=' + SINGLE_URL_OPT_PLACEHOLDER;
-
+    /** @function */
     var resolve;
+    /** @function */
     var reject;
 
     /**
@@ -34,7 +56,7 @@ var qlikIsolated = (function (config) {
      * @return {Promise} Promise that gets resolved when qlik sense is successfully loaded
      */
     function getQlik(qlikServerUrl, prefix) {
-        if (!qlikServerUrl)
+        if (!qlikServerUrl && !qlikServerBaseUrl)
             throw 'qlik-Isolated: Qlik Server URL is required';
 
         var p = new Promise(function (res, rej) {
@@ -47,8 +69,8 @@ var qlikIsolated = (function (config) {
             return p;
         }
 
-        qlikServerBaseUrl = qlikServerUrl;
-        qlikServerPrefix = prefix || '/';
+        qlikServerBaseUrl = qlikServerUrl || qlikServerBaseUrl;
+        qlikServerPrefix = prefix || qlikServerPrefix;
 
         // create an iframe for an isolated context
         var qFrame = document.createElement('iframe');
@@ -90,14 +112,14 @@ var qlikIsolated = (function (config) {
         qlik = q;
         resolve(qlik);
     }
-	
+
 	/*
 	 * callback function called from the iframe when qlik load failed
 	 */
     function _qFrameLoadFailure(e) {
         reject(e);
     }
-	
+
 	/*
 	 * Create iframe element for loading qlik object
 	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
@@ -111,17 +133,17 @@ var qlikIsolated = (function (config) {
 	 * @param {boolean} [disableAnimation = false] enable / disable animations
 	 * @param {boolean} [selections] values to be selected on load
 	 */
-	function createIframe(appid, obj, sheet, baseUrl, showSelectionBar, clearSelection,
-                       disableInteraction, disableSelection, disableAnimation, selections){
-		if (typeof appid !== 'string')
+    function createIframe(appid, obj, sheet, baseUrl, showSelectionBar, clearSelection,
+        disableInteraction, disableSelection, disableAnimation, selections) {
+        if (typeof appid !== 'string')
             throw 'qlik-Isolated: appid must be a vaild string';
-        
+
         if ((typeof obj !== 'string') && (typeof sheet !== 'string'))
             throw 'qlik-Isolated: obj or sheet must be a vaild string';
 
         // form Qlik Sense Single integration URL
         var url = baseUrl || qlikServerBaseUrl;
-        if(!url)
+        if (!url)
             throw 'qlik-Isolated: baseUrl is required';
 
         var options = '';
@@ -129,7 +151,7 @@ var qlikIsolated = (function (config) {
         options += disableInteraction ? SINGLE_URL_OPT_NO_INTERACTION : '';
         options += disableAnimation ? SINGLE_URL_OPT_NO_ANIMATION : '';
         options += disableSelection ? SINGLE_URL_OPT_NO_SELECTION : '';
-        options = options. substring(0, options.lastIndexOf(','));
+        options = options.substring(0, options.lastIndexOf(','));
 
         url += SINGLE_URL
             .replace(SINGLE_URL_APPID_PLACEHOLDER, appid)
@@ -137,10 +159,10 @@ var qlikIsolated = (function (config) {
             .replace(SINGLE_URL_OPT_PLACEHOLDER, options)
             .replace(SINGLE_URL_SHEET_PLACEHOLDER, sheet);
 
-        if(clearSelection)
+        if (clearSelection)
             url += SINGLE_URL_CLEAR_SELECTION;
 
-        if(selections)
+        if (selections)
             url += '&select=' + selections;
 
         // add iframe to single integration URL
@@ -148,14 +170,14 @@ var qlikIsolated = (function (config) {
         singleIntegrationFrame.style.border = 'none';
         singleIntegrationFrame.style.width = '100%';
         singleIntegrationFrame.style.height = '100%';
-		singleIntegrationFrame.className = 'qlik-isolated';
+        singleIntegrationFrame.className = 'qlik-isolated';
         singleIntegrationFrame.src = url;
-		
-		return singleIntegrationFrame;
-	}
+
+        return singleIntegrationFrame;
+    }
 
 	/*
-	 * Create iframe element for loading qlik object
+	 * Load a qlik object in a isolated iframe
 	 * @param {HTMLElement} element HTML element into which the object must be loaded
 	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
 	 * @param {string} [obj] id of the object to be loaded. Eg: prgzES
@@ -169,20 +191,20 @@ var qlikIsolated = (function (config) {
 	 * @param {boolean} [selections] values to be selected on load
 	 */
     function getObjectIsolated(element, appid, obj, sheet, baseUrl,
-                               showSelectionBar, clearSelection, disableInteraction,
-                               disableSelection, disableAnimation, selections) {
-        if(!element)
+        showSelectionBar, clearSelection, disableInteraction,
+        disableSelection, disableAnimation, selections) {
+        if (!element)
             throw 'qlik-Isolated: element must be a HTML element or a jQuery selection';
-		
-		var singleIntegrationFrame = createIframe(appid, obj, sheet, baseUrl, showSelectionBar,
-												  clearSelection, disableInteraction,
-												  disableSelection,	disableAnimation, selections);
-        
+
+        var singleIntegrationFrame = createIframe(appid, obj, sheet, baseUrl, showSelectionBar,
+            clearSelection, disableInteraction,
+            disableSelection, disableAnimation, selections);
+
         element.append(singleIntegrationFrame);
     }
 
 	/*
-	 * Create iframe element for loading qlik object
+	 * Load a qlik selection bar in a isolated iframe
 	 * @param {HTMLElement} element HTML element into which the object must be loaded
 	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
 	 * @param {string} [baseUrl] URL of the Qlik server
@@ -193,36 +215,46 @@ var qlikIsolated = (function (config) {
 	 * @param {boolean} [selections] values to be selected on load
 	 */
     function getSelectionBarIsolated(element, appid, baseUrl, clearSelection, disableInteraction,
-                                     disableSelection, disableAnimation, selections) {
-		if(!element)
+        disableSelection, disableAnimation, selections) {
+        if (!element)
             throw 'qlik-Isolated: element must be a HTML element or a jQuery selection';
-		
-		var singleIntegrationFrame = createIframe(element,appid,'CurrentSelections', '', baseUrl,
-									              false, clearSelection, disableInteraction,
-												  disableSelection, disableAnimation, selections);
+
+        var singleIntegrationFrame = createIframe(appid, 'CurrentSelections', '', baseUrl,
+            false, clearSelection, disableInteraction,
+            disableSelection, disableAnimation, selections);
         singleIntegrationFrame.className = 'qlik-isolated qlik-isolated-selection-bar';
-		singleIntegrationFrame.style.marginTop = '-50px';
+        singleIntegrationFrame.style.marginTop = '-50px';
         element.append(singleIntegrationFrame);
     }
 
-	if(config && typeof config.url === 'string') {
-		qlikServerBaseUrl = config.url;
-		qlikServerPrefix = config.prefix || '/';
-		if(config.autoload){
-			getQlik().then(function(){
-				console.log('qlik-isolated: qlik.js auto loaded');
-			}, function(e){
-				console.log('qlik-isolated: error auto loading qlik');
-				console.log(e);
-			});
-		}
-	}
-	
     return {
         getQlik: getQlik,
         getObjectIsolated: getObjectIsolated,
-		getSelectionBarIsolated: getSelectionBarIsolated,
-		_qFrameLoadSuccess: _qFrameLoadSuccess,
-        _qFrameLoadFailure: _qFrameLoadFailure
+        getSelectionBarIsolated: getSelectionBarIsolated,
+        _qFrameLoadSuccess: _qFrameLoadSuccess,
+        _qFrameLoadFailure: _qFrameLoadFailure,
+        version: '1.0.2'
     };
-})(qlikIsolatedConfig);
+}());
+
+/* autoload if qlikIsolatedLoadConfig exists */
+if (typeof qlikIsolatedLoadConfig !== 'undefined') {
+    if (typeof qlikIsolatedLoadConfig.url === 'string') {
+        qlikIsolated.getQlik(qlikIsolatedLoadConfig.url, qlikIsolatedLoadConfig.prefix)
+            .then(function (q) {
+                console.log('qlik-isolated: qlik.js auto loaded');
+                if (qlikIsolatedLoadConfig.makeGlobal) {
+                    window.qlik = q;
+                }
+                if (typeof qlikIsolatedLoadConfig.successCallback === 'function') {
+                    qlikIsolatedLoadConfig.successCallback(q);
+                }
+            }, function (e) {
+                console.log('qlik-isolated: error auto loading qlik');
+                console.log(e);
+                if (typeof qlikIsolatedLoadConfig.failureCallback === 'function') {
+                    qlikIsolatedLoadConfig.failureCallback(e);
+                }
+            });
+    }
+}
