@@ -27,7 +27,7 @@ var qlikIsolated = (function () {
      */
     function getQlik(qlikServerUrl, prefix) {
         if (!qlikServerUrl)
-            throw 'qlik-Isolated: Qlik configuration JSON is required';
+            throw 'qlik-Isolated: Qlik Server URL is required';
 
         var p = new Promise(function (res, rej) {
             resolve = res;
@@ -127,14 +127,17 @@ var qlikIsolated = (function () {
         element.append(singleIntegrationFrame);
     }
 
-    function getSelectionBarIsolated(element, appid, baseUrl){
-        getObjectIsolated(element,appid,'CurrentSelections', baseUrl);
+    function getSelectionBarIsolated(element, appid, baseUrl, clearSelection, disableInteraction,
+                               disableSelection, disableAnimation, selections){
+        getObjectIsolated(element,appid,'CurrentSelections', '', baseUrl, false, clearSelection,
+                                disableInteraction, disableSelection, disableAnimation, selections);
     }
 
     return {
         getQlik: getQlik,
         getObjectIsolated: getObjectIsolated,
-        _qFrameLoadSuccess: _qFrameLoadSuccess,
+		getSelectionBarIsolated: getSelectionBarIsolated,
+		_qFrameLoadSuccess: _qFrameLoadSuccess,
         _qFrameLoadFailure: _qFrameLoadFailure
     };
 })();
