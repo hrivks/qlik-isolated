@@ -13,7 +13,7 @@ var qlikIsolated = (function () {
     var SINGLE_URL_CLEAR_SELECTION = '&select=clearall';
     var SINGLE_URL = '/single/?appid=' + SINGLE_URL_APPID_PLACEHOLDER
         + '&obj=' + SINGLE_URL_OBJ_PLACEHOLDER
-        + '$sheet=' + SINGLE_URL_SHEET_PLACEHOLDER
+        + '&sheet=' + SINGLE_URL_SHEET_PLACEHOLDER
         + '&opt=' + SINGLE_URL_OPT_PLACEHOLDER;
 
     var resolve;
