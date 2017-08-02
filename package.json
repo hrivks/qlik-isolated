@@ -1,0 +1,30 @@
+{
+  "name": "qlik-isolated",
+  "version": "1.0.4",
+  "description": "Load Qlik Sense's qlik.js in a isolated non-conflicting way and embed Qlik Sense objects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hrivks/qlik-isolated.git"
+  },
+  "keywords": [
+    "qlik",
+    "qlik-sense",
+    "qlik.js",
+    "mashup"
+  ],
+  "author": "Hari Vikas Janarthanan (hrivks@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hrivks/qlik-isolated/issues"
+  },
+  "homepage": "https://github.com/hrivks/qlik-isolated#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-string-replace": "^1.3.1"
+  }
+}
