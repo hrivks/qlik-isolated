@@ -1,4 +1,12 @@
-var qlikIsolated = (function () {
+/**
+ * Initialize qlik isolated
+ * @param {Object} [config] global qlik configuration
+ * @property {string} config.url Qlik server base url
+ * @property {string} [config.perfix = '/'] Qlik Server prefix for resources folder
+ * @property {boolean} [config.autoload = false] Load qlik.js on statup
+ * @return {Object} qlikIsolated object
+ */
+var qlikIsolated = (function (config) {
     var qlik;
     var qlikServerBaseUrl;
     var qlikServerPrefix;
@@ -185,7 +193,7 @@ var qlikIsolated = (function () {
 	 * @param {boolean} [selections] values to be selected on load
 	 */
     function getSelectionBarIsolated(element, appid, baseUrl, clearSelection, disableInteraction,
-                               disableSelection, disableAnimation, selections){
+                                     disableSelection, disableAnimation, selections) {
 		if(!element)
             throw 'qlik-Isolated: element must be a HTML element or a jQuery selection';
 		
@@ -197,6 +205,19 @@ var qlikIsolated = (function () {
         element.append(singleIntegrationFrame);
     }
 
+	if(config && typeof config.url === 'string') {
+		qlikServerBaseUrl = config.url;
+		qlikServerPrefix = config.prefix || '/';
+		if(config.autoload){
+			getQlik().then(function(){
+				console.log('qlik-isolated: qlik.js auto loaded');
+			}, function(e){
+				console.log('qlik-isolated: error auto loading qlik');
+				console.log(e);
+			});
+		}
+	}
+	
     return {
         getQlik: getQlik,
         getObjectIsolated: getObjectIsolated,
@@ -204,4 +225,4 @@ var qlikIsolated = (function () {
 		_qFrameLoadSuccess: _qFrameLoadSuccess,
         _qFrameLoadFailure: _qFrameLoadFailure
     };
-})();
+})(qlikIsolatedConfig);
