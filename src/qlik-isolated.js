@@ -54,6 +54,9 @@ var qlikIsolated = (function () {
         return p;
     }
 
+	/**
+	 * Get HTML to be writen into the qframe
+	 */
     function getQFrameHtml() {
         var jsUrl = qlikServerBaseUrl + qlikServerPrefix + 'resources';
 
@@ -72,22 +75,37 @@ var qlikIsolated = (function () {
             + '</html>';
     }
 
+	/**
+	 * callback function called from the iframe when qlik is loaded
+	 */
     function _qFrameLoadSuccess(q) {
         qlik = q;
         resolve(qlik);
     }
-
+	
+	/*
+	 * callback function called from the iframe when qlik load failed
+	 */
     function _qFrameLoadFailure(e) {
         reject(e);
     }
-
-    function getObjectIsolated(element, appid, obj, sheet, baseUrl,
-                               showSelectionBar, clearSelection, disableInteraction,
-                               disableSelection, disableAnimation, selections) {
-        if(!element)
-            throw 'qlik-Isolated: element must be a HTML element or a jQuery selection';
-
-        if (typeof appid !== 'string')
+	
+	/*
+	 * Create iframe element for loading qlik object
+	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
+	 * @param {string} [obj] id of the object to be loaded. Eg: prgzES
+	 * @param {string} [sheet] id of the sheet. Either obj or sheet must be specified
+	 * @param {string} [baseUrl] URL of the Qlik server
+	 * @param {boolean} [showSelectionBar = false] show / hide the selection bar
+	 * @param {boolean} [clearSelection = false] clear selections on load
+	 * @param {boolean} [disableInteraction = false] enable / disable interactions
+	 * @param {boolean} [disableSelection = false] enable / disable selections
+	 * @param {boolean} [disableAnimation = false] enable / disable animations
+	 * @param {boolean} [selections] values to be selected on load
+	 */
+	function createIframe(appid, obj, sheet, baseUrl, showSelectionBar, clearSelection,
+                       disableInteraction, disableSelection, disableAnimation, selections){
+		if (typeof appid !== 'string')
             throw 'qlik-Isolated: appid must be a vaild string';
         
         if ((typeof obj !== 'string') && (typeof sheet !== 'string'))
@@ -122,15 +140,61 @@ var qlikIsolated = (function () {
         singleIntegrationFrame.style.border = 'none';
         singleIntegrationFrame.style.width = '100%';
         singleIntegrationFrame.style.height = '100%';
-        singleIntegrationFrame.className = 'qlik-isolated';
+		singleIntegrationFrame.className = 'qlik-isolated';
         singleIntegrationFrame.src = url;
+		
+		return singleIntegrationFrame;
+	}
+
+	/*
+	 * Create iframe element for loading qlik object
+	 * @param {HTMLElement} element HTML element into which the object must be loaded
+	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
+	 * @param {string} [obj] id of the object to be loaded. Eg: prgzES
+	 * @param {string} [sheet] id of the sheet. Either obj or sheet must be specified
+	 * @param {string} [baseUrl] URL of the Qlik server
+	 * @param {boolean} [showSelectionBar = false] show / hide the selection bar
+	 * @param {boolean} [clearSelection = false] clear selections on load
+	 * @param {boolean} [disableInteraction = false] enable / disable interactions
+	 * @param {boolean} [disableSelection = false] enable / disable selections
+	 * @param {boolean} [disableAnimation = false] enable / disable animations
+	 * @param {boolean} [selections] values to be selected on load
+	 */
+    function getObjectIsolated(element, appid, obj, sheet, baseUrl,
+                               showSelectionBar, clearSelection, disableInteraction,
+                               disableSelection, disableAnimation, selections) {
+        if(!element)
+            throw 'qlik-Isolated: element must be a HTML element or a jQuery selection';
+		
+		var singleIntegrationFrame = createIframe(appid, obj, sheet, baseUrl, showSelectionBar,
+												  clearSelection, disableInteraction,
+												  disableSelection,	disableAnimation, selections);
+        
         element.append(singleIntegrationFrame);
     }
 
+	/*
+	 * Create iframe element for loading qlik object
+	 * @param {HTMLElement} element HTML element into which the object must be loaded
+	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
+	 * @param {string} [baseUrl] URL of the Qlik server
+	 * @param {boolean} [clearSelection = false] clear selections on load
+	 * @param {boolean} [disableInteraction = false] enable / disable interactions
+	 * @param {boolean} [disableSelection = false] enable / disable selections
+	 * @param {boolean} [disableAnimation = false] enable / disable animations
+	 * @param {boolean} [selections] values to be selected on load
+	 */
     function getSelectionBarIsolated(element, appid, baseUrl, clearSelection, disableInteraction,
                                disableSelection, disableAnimation, selections){
-        getObjectIsolated(element,appid,'CurrentSelections', '', baseUrl, false, clearSelection,
-                                disableInteraction, disableSelection, disableAnimation, selections);
+		if(!element)
+            throw 'qlik-Isolated: element must be a HTML element or a jQuery selection';
+		
+		var singleIntegrationFrame = createIframe(element,appid,'CurrentSelections', '', baseUrl,
+									              false, clearSelection, disableInteraction,
+												  disableSelection, disableAnimation, selections);
+        singleIntegrationFrame.className = 'qlik-isolated qlik-isolated-selection-bar';
+		singleIntegrationFrame.style.marginTop = '-50px';
+        element.append(singleIntegrationFrame);
     }
 
     return {
