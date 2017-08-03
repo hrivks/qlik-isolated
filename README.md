@@ -13,6 +13,12 @@ Load Qlik Sense's qlik.js in an isolated, non-conflicting way and embed Qlik Sen
 
 see [wiki](https://github.com/hrivks/qlik-isolated/wiki/qlik-isolated.js-wiki) for complete reference
 
+through npm
+
+```bash
+npm install qlik-isolated
+```
+
 Include the qlik-isolated.js file
 ```HTML
 <script src="qlik-isolated.min.js"></script>
