@@ -5,7 +5,7 @@ Load Qlik Sense's qlik.js in an isolated, non-conflicting way and embed Qlik Sen
 ### Use case
 * you want reference to qlik.js' qlik object to access the [App API](https://help.qlik.com/en-US/sense-developer/3.2/Subsystems/APIs/Content/MashupAPI/qlik-app-interface.htm)
 * you do NOT want to load qlik's require.js directly as it in-turn loads Qlik's version of libraries (jquery, angular, require) which may **conflict** with your website's
-* you want to load qlik.js **on-demand** and avoid conflicts like `WARNING: Tried to load angular more than once`, jQuery version conficts etc. 
+* you want to load qlik.js **on-demand** but avoid conflicts like `WARNING: Tried to load angular more than once`, jQuery version conficts etc. 
 * you want to **dynamically embed** qlik sense objects (charts, sheets, selection bar) without worrying about CORS and virtual proxy settings
 
  
@@ -15,7 +15,7 @@ Include the qlik-isolated.js file
 <script src="qlik-isolated.js"></script>
 ```
 
-###### Get Qlik object
+##### Get Qlik object
 ```javascript
 qlikIsolated
     .getQlik('http://<qlikserver>:<port>')
@@ -24,7 +24,7 @@ qlikIsolated
     })
 ```
 
-###### Embed a qlik object (chart, sheet etc)
+##### Embed a qlik object (chart, sheet etc)
 ```javascript
 qlikIsolated
     .getObjectIsolated(	$('#myDiv'),  \\ element
@@ -35,18 +35,18 @@ qlikIsolated
     
 ```
 
-###### Embed selection bar
+##### Embed selection bar
 if you have a number of qlik objects and would like a common selection bar say, at the top
 
 ```javascript
 qlikIsolated
     .getSelectionBarIsolated($('#header'),  \\ element
-    			'My App.qvf',       \\ app id
-    			'http://<qlikserver>:<port>'); \\ Qlik Server URL 
+					'My App.qvf',       \\ app id
+					'http://<qlikserver>:<port>'); \\ Qlik Server URL 
     
 ```
 
-###### Autoload Qlik upon page load
+##### Autoload Qlik upon page load
 To automatically load qlik.js and make it globally available through the window object, add a `qlikIsolatedLoadConfig ` object before the qlik-isolated.js script reference
 
 ```HTML
@@ -62,10 +62,10 @@ To automatically load qlik.js and make it globally available through the window 
 
 ### Under the hood
 ---
-###### Loading qlik.js
+##### Loading qlik.js
 An iframe is created through which Qlik's require.js is loaded. When require loads qlik, the qlik object is passed to the parent frame
 
-###### Embedding qlik objects
+##### Embedding qlik objects
 Single integration API iframes are created dynamically and added to the DOM
 
 ### P.S
