@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 	'string-replace': {
 		dist: {
 			files: {
-			  'build/': 'build/*.js',
+			  'build/': 'build/*.js'
 			},
 			options: {
 			  replacements: [{

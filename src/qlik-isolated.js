@@ -1,13 +1,13 @@
 /**
  * @fileOverview qlik-isolated.js : Load Qlik Sense's qlik.js in a isolated non-conflicting way and
  *                                  embed Qlik Sense objects
- * @author <a href="hrivks@gmail.com">Hari Vikas Janarthanan (hrivks)</a>
- * @version 1.0.2
+ * @author Hari Vikas Janarthanan | hrivks@gmail.com | https://github/hrivks
+ * @version {{VERSION}}
  * @license MIT
  */
 
 /**
- * Configuration options for qlik isolated
+ * Configuration options for qlik-isolated
  * @typedef {Object} qlikIsolatedLoadConfig
  * @property {string} url Qlik server base url
  * @property {string} [perfix = '/'] Qlik Server prefix for resources folder
@@ -51,6 +51,7 @@ var qlikIsolated = (function () {
 
     /**
      * Load Qlik in an isolated context
+     * @function getQlik
      * @param {string} qlikServerUrl Qlik Server base url
      * @param {string} [prefix='/'] Qlik Server prefix for resources folder
      * @return {Promise} Promise that gets resolved when qlik sense is successfully loaded
@@ -107,7 +108,7 @@ var qlikIsolated = (function () {
 
 	/**
 	 * callback function called from the iframe when qlik is loaded
-	 */
+     */
     function _qFrameLoadSuccess(q) {
         qlik = q;
         resolve(qlik);
@@ -120,7 +121,7 @@ var qlikIsolated = (function () {
         reject(e);
     }
 
-	/*
+	/**
 	 * Create iframe element for loading qlik object
 	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
 	 * @param {string} [obj] id of the object to be loaded. Eg: prgzES
@@ -131,7 +132,7 @@ var qlikIsolated = (function () {
 	 * @param {boolean} [disableInteraction = false] enable / disable interactions
 	 * @param {boolean} [disableSelection = false] enable / disable selections
 	 * @param {boolean} [disableAnimation = false] enable / disable animations
-	 * @param {boolean} [selections] values to be selected on load
+	 * @param {string[]} [selections] array of key-values to be selected on load
 	 */
     function createIframe(appid, obj, sheet, baseUrl, showSelectionBar, clearSelection,
         disableInteraction, disableSelection, disableAnimation, selections) {
@@ -162,8 +163,9 @@ var qlikIsolated = (function () {
         if (clearSelection)
             url += SINGLE_URL_CLEAR_SELECTION;
 
-        if (selections)
-            url += '&select=' + selections;
+        if (selections && (selections instanceof Array)) {
+            url += '&select=' + selections.join['&select='];
+        }
 
         // add iframe to single integration URL
         var singleIntegrationFrame = document.createElement('iframe');
@@ -176,8 +178,9 @@ var qlikIsolated = (function () {
         return singleIntegrationFrame;
     }
 
-	/*
+	/**
 	 * Load a qlik object in a isolated iframe
+     * @function getObjectIsolated
 	 * @param {HTMLElement} element HTML element into which the object must be loaded
 	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
 	 * @param {string} [obj] id of the object to be loaded. Eg: prgzES
@@ -188,7 +191,7 @@ var qlikIsolated = (function () {
 	 * @param {boolean} [disableInteraction = false] enable / disable interactions
 	 * @param {boolean} [disableSelection = false] enable / disable selections
 	 * @param {boolean} [disableAnimation = false] enable / disable animations
-	 * @param {boolean} [selections] values to be selected on load
+     * @param {string[]} [selections] array of key-values to be selected on load
 	 */
     function getObjectIsolated(element, appid, obj, sheet, baseUrl,
         showSelectionBar, clearSelection, disableInteraction,
@@ -203,8 +206,9 @@ var qlikIsolated = (function () {
         element.append(singleIntegrationFrame);
     }
 
-	/*
+	/**
 	 * Load a qlik selection bar in a isolated iframe
+     * @function getSelectionBarIsolated
 	 * @param {HTMLElement} element HTML element into which the object must be loaded
 	 * @param {string} appid Qlik app id. Eg: Consumer Sales.qvf
 	 * @param {string} [baseUrl] URL of the Qlik server
@@ -212,7 +216,7 @@ var qlikIsolated = (function () {
 	 * @param {boolean} [disableInteraction = false] enable / disable interactions
 	 * @param {boolean} [disableSelection = false] enable / disable selections
 	 * @param {boolean} [disableAnimation = false] enable / disable animations
-	 * @param {boolean} [selections] values to be selected on load
+     * @param {string[]} [selections] array of key-values to be selected on load
 	 */
     function getSelectionBarIsolated(element, appid, baseUrl, clearSelection, disableInteraction,
         disableSelection, disableAnimation, selections) {
@@ -233,7 +237,8 @@ var qlikIsolated = (function () {
         getSelectionBarIsolated: getSelectionBarIsolated,
         _qFrameLoadSuccess: _qFrameLoadSuccess,
         _qFrameLoadFailure: _qFrameLoadFailure,
-        version: '1.0.2'
+        /** {string} version */
+        version: '{{VERSION}}'
     };
 }());
 
