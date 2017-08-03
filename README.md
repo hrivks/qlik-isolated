@@ -1,7 +1,5 @@
 # qlik-isolated
 
-***
-
 Load Qlik Sense's qlik.js in an isolated, non-conflicting way and embed Qlik Sense objects into your web page
 
 ### Use case
@@ -29,11 +27,11 @@ qlikIsolated
 ###### Embed a qlik object (chart, sheet etc)
 ```javascript
 qlikIsolated
-    .getObjectIsolated(	$('#myDiv'),  \** element **\ 
-    					'My App.qvf', \** app id **\
-    					'prgzES',     \** object id **\
-    					'eRxSeT',     \** sheet id (optional) **\
-                        'http://<qlikserver>:<port>'); \** Qlik Server URL **\
+    .getObjectIsolated(	$('#myDiv'),  \\ element
+    			'My App.qvf', \\ app id
+    			'prgzES',     \\ object id
+    			'eRxSeT',     \\ sheet id (optional, if object id is specified)
+    			'http://<qlikserver>:<port>'); \\ Qlik Server URL 
     
 ```
 
