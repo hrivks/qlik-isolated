@@ -52,12 +52,12 @@ var qlikIsolated = (function () {
     /**
      * Load Qlik in an isolated context
      * @function getQlik
-     * @param {string} qlikServerUrl Qlik Server base url
+     * @param {string} url Qlik Server base url
      * @param {string} [prefix='/'] Qlik Server prefix for resources folder
      * @return {Promise} Promise that gets resolved when qlik sense is successfully loaded
      */
-    function getQlik(qlikServerUrl, prefix) {
-        if (!qlikServerUrl && !qlikServerBaseUrl)
+    function getQlik(url, prefix) {
+        if (!url && !qlikServerBaseUrl)
             throw 'qlik-Isolated: Qlik Server URL is required';
 
         var p = new Promise(function (res, rej) {
@@ -70,7 +70,7 @@ var qlikIsolated = (function () {
             return p;
         }
 
-        qlikServerBaseUrl = qlikServerUrl || qlikServerBaseUrl;
+        qlikServerBaseUrl = url || qlikServerBaseUrl;
         qlikServerPrefix = prefix || qlikServerPrefix;
 
         // create an iframe for an isolated context
@@ -164,7 +164,7 @@ var qlikIsolated = (function () {
             url += SINGLE_URL_CLEAR_SELECTION;
 
         if (selections && (selections instanceof Array)) {
-            url += '&select=' + selections.join['&select='];
+            url += '&select=' + selections.join('&select=');
         }
 
         // add iframe to single integration URL
