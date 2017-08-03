@@ -15,7 +15,7 @@ see [wiki](https://github.com/hrivks/qlik-isolated/wiki/qlik-isolated.js-wiki) f
 
 Include the qlik-isolated.js file
 ```HTML
-<script src="qlik-isolated.js"></script>
+<script src="qlik-isolated.min.js"></script>
 ```
 
 ##### Get Qlik object
@@ -49,7 +49,7 @@ qlikIsolated
     
 ```
 
-##### Autoload Qlik upon page load
+##### Auto load Qlik upon page load
 To automatically load qlik.js and make it globally available through the window object, add a `qlikIsolatedLoadConfig ` object before the qlik-isolated.js script reference
 
 ```HTML

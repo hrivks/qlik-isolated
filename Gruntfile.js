@@ -11,13 +11,22 @@ module.exports = function(grunt) {
       },
       build: {
         src: 'src/<%= pkg.name %>.js',
-        dest: 'build/<%= pkg.name %>.min.js'
+        dest: '<%= pkg.name %>.min.js'
       }
+    },
+	jsdoc : {
+        dist : {
+            src: ['src/*.js'],
+            options: {
+                destination: 'doc'
+            }
+        }
     },
 	'string-replace': {
 		dist: {
 			files: {
-			  'build/': 'build/*.js'
+			  './': '<%= pkg.name %>.min.js',
+			  'doc/': 'doc/*.html'
 			},
 			options: {
 			  replacements: [{
@@ -32,8 +41,9 @@ module.exports = function(grunt) {
   // load plugins
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-string-replace');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
   // Default task(s).
-  grunt.registerTask('default', ['uglify', 'string-replace']);
+  grunt.registerTask('default', ['uglify', 'jsdoc' ,'string-replace']);
 
 };
