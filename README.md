@@ -41,8 +41,8 @@ if you have a number of qlik objects and would like a common selection bar say, 
 ```javascript
 qlikIsolated
     .getSelectionBarIsolated($('#header'),  \\ element
-					'My App.qvf',       \\ app id
-					'http://<qlikserver>:<port>'); \\ Qlik Server URL 
+				'My App.qvf',       \\ app id
+				'http://<qlikserver>:<port>'); \\ Qlik Server URL 
     
 ```
 
