@@ -153,6 +153,9 @@ var qlikIsolated = (function () {
         options += disableAnimation ? SINGLE_URL_OPT_NO_ANIMATION : '';
         options += disableSelection ? SINGLE_URL_OPT_NO_SELECTION : '';
         options = options.substring(0, options.lastIndexOf(','));
+		
+		obj = obj || '';
+		sheet = sheet || '';
 
         url += SINGLE_URL
             .replace(SINGLE_URL_APPID_PLACEHOLDER, appid)
