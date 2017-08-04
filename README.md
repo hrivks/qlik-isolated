@@ -2,7 +2,7 @@
 
 Load Qlik Sense's qlik.js in an isolated, non-conflicting way and embed Qlik Sense objects into your web page
 
-[live demo](http://meetvikas.net/misc/qlik-isolated/demo/Index.html)
+#### [live demo](http://meetvikas.net/misc/qlik-isolated/demo/Index.html)
 
 ### Use case
 * you want reference to qlik.js' qlik object to access the [App API](https://help.qlik.com/en-US/sense-developer/3.2/Subsystems/APIs/Content/MashupAPI/qlik-app-interface.htm)
