@@ -4,7 +4,7 @@ Load Qlik Sense's qlik.js in an isolated, non-conflicting way and embed Qlik Sen
 
 ### :zap: [live demo](http://meetvikas.net/misc/qlik-isolated/demo/Index.html) :zap:
 
-Angular? Check out [ng-qlik-isolated](https://github.com/hrivks/ng-qlik-isolated)
+Angular? Check out **[ng-qlik-isolated](https://github.com/hrivks/ng-qlik-isolated)**
 
 ### Use case
 * you want reference to qlik.js' qlik object to access the [App API](https://help.qlik.com/en-US/sense-developer/3.2/Subsystems/APIs/Content/MashupAPI/qlik-app-interface.htm)
@@ -15,7 +15,7 @@ Angular? Check out [ng-qlik-isolated](https://github.com/hrivks/ng-qlik-isolated
  
 ### Usage
 
-see [wiki](https://github.com/hrivks/qlik-isolated/wiki/qlik-isolated.js-wiki) :page_facing_up: for complete reference
+:page_facing_up: see [wiki](https://github.com/hrivks/qlik-isolated/wiki/qlik-isolated.js-wiki) for complete reference
 
 through npm
 
